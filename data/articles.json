@@ -1,14 +1,44 @@
-{
-  "id": 301,
-  "title": "New incident...",
-  "date": "2025-12-01",
-  "state": "Maharashtra",
-  "city": "Mumbai",
-  "latitude": 19.0760,
-  "longitude": 72.8777,
-  "category": "hate_speech",
-  "tags": ["politics"],
-  "source": "The Hindu",
-  "url": "https://www.thehindu.com/news/cities/kozhikode/the-muslim-woman-who-paints-krishna/article36847790.ece",
-  "summary": "2–3 lines summary."
-
+[
+ {
+   "id": 1,
+   "Title": "The Muslim woman who paints Krishna",
+   "Date": "5/10/2021",
+   "State": "Kerala",
+   "City": "Kozhikode",
+   "Latitude": " 11°26'34.22\"N",
+   "Longitude": " 75°41'51.23\"E",
+   "Category": "Positive",
+   "tags": "",
+   "Source": "The Hindu",
+   "URL": "https://www.thehindu.com/news/cities/kozhikode/the-muslim-woman-who-paints-krishna/article36847790.ece",
+   "Summary": ""
+ },
+ {
+   "id": 2,
+   "Title": "Hallelujah! Church, temple share X'mas Joy",
+   "Date": "",
+   "State": "",
+   "City": "",
+   "Latitude": "  8°59'23.14\"N",
+   "Longitude": " 76°47'13.30\"E",
+   "Category": "Positive",
+   "tags": "",
+   "Source": "The Hindu",
+   "URL": "https://www.thehindu.com/news/national/kerala/from-church-to-temple-kollam-carollers-sing-in-harmony/article38014132.ece",
+   "Summary": ""
+ },
+ {
+   "id": 3,
+   "Title": "",
+   "Date": "",
+   "State": "",
+   "City": "",
+   "Latitude": "",
+   "Longitude": "",
+   "Category": "",
+   "tags": "",
+   "Source": "",
+   "URL": "",
+   "Summary": ""
+ }
+]
