@@ -1,44 +1,31 @@
 [
- {
-   "id": 1,
-   "Title": "The Muslim woman who paints Krishna",
-   "Date": "5/10/2021",
-   "State": "Kerala",
-   "City": "Kozhikode",
-   "Latitude": " 11°26'34.22\"N",
-   "Longitude": " 75°41'51.23\"E",
-   "Category": "Positive",
-   "tags": "",
-   "Source": "The Hindu",
-   "URL": "https://www.thehindu.com/news/cities/kozhikode/the-muslim-woman-who-paints-krishna/article36847790.ece",
-   "Summary": ""
- },
- {
-   "id": 2,
-   "Title": "Hallelujah! Church, temple share X'mas Joy",
-   "Date": "",
-   "State": "",
-   "City": "",
-   "Latitude": "  8°59'23.14\"N",
-   "Longitude": " 76°47'13.30\"E",
-   "Category": "Positive",
-   "tags": "",
-   "Source": "The Hindu",
-   "URL": "https://www.thehindu.com/news/national/kerala/from-church-to-temple-kollam-carollers-sing-in-harmony/article38014132.ece",
-   "Summary": ""
- },
- {
-   "id": 3,
-   "Title": "",
-   "Date": "",
-   "State": "",
-   "City": "",
-   "Latitude": "",
-   "Longitude": "",
-   "Category": "",
-   "tags": "",
-   "Source": "",
-   "URL": "",
-   "Summary": ""
- }
+  {
+    "id": 1,
+    "title": "The Muslim woman who paints Krishna",
+    "date": "2021-10-05",
+    "state": "Kerala",
+    "city": "Kozhikode",
+    "latitude": 11.439,
+    "longitude": 75.697,
+    "category": "secularism",
+    "tags": [],
+    "source": "The Hindu",
+    "url": "https://www.thehindu.com/news/cities/kozhikode/the-muslim-woman-who-paints-krishna/article36847790.ece",
+    "summary": ""
+  },
+  {
+    "id": 2,
+    "title": "Hallelujah! Church, temple share X'mas Joy",
+    "date": "",
+    "state": "Kerala",
+    "city": "Kollam",
+    "latitude": 8.990,
+    "longitude": 76.787,
+    "category": "secularism",
+    "tags": [],
+    "source": "The Hindu",
+    "url": "https://www.thehindu.com/news/national/kerala/from-church-to-temple-kollam-carollers-sing-in-harmony/article38014132.ece",
+    "summary": ""
+  }
 ]
+
