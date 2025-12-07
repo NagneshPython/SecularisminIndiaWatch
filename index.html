@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Communalism Watch – India Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Leaflet CSS (for the map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <!-- Simple page styling -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 12px 16px;
+      background: #111827;
+      color: #f9fafb;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    header h1 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+    header .subtitle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    select, input {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      font-size: 0.85rem;
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      min-height: 0;
+    }
+    #map {
+      width: 100%;
+      height: calc(100vh - 72px);
+    }
+    #sidebar {
+      border-left: 1px solid #e5e7eb;
+      background: #ffffff;
+      padding: 8px 10px;
+      overflow-y: auto;
+      height: calc(100vh - 72px);
+    }
+    #sidebar h2 {
+      font-size: 1rem;
+      margin: 4px 0 8px;
+    }
+    .article-card {
+      padding: 8px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+      font-size: 0.82rem;
+    }
+    .article-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+    .article-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .article-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+    .badge-communal_violence { background: #fee2e2; color: #b91c1c; }
+    .badge-hate_speech      { background: #ffedd5; color: #c2410c; }
+    .badge-legal_case       { background: #e0f2fe; color: #0369a1; }
+    .badge-policy           { background: #e5e7eb; color: #374151; }
+    .badge-secularism       { background: #dcfce7; color: #166534; }
+    .badge-default          { background: #e5e7eb; color: #374151; }
+
+    .badge-tag {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .legend {
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      margin-right: 6px;
+      border: 1px solid #9ca3af;
+    }
+
+    /* Responsive: stack sidebar under map on small screens */
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      #map, #sidebar {
+        height: auto;
+        min-height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Communalism Watch – India</h1>
+      <div class="subtitle">Map of reported communalism & secularism-related articles</div>
+    </div>
+    <div id="controls">
+      <select id="categoryFilter">
+        <option value="all">All categories</option>
+        <option value="communal_violence">Communal violence</option>
+        <option value="hate_speech">Hate speech</option>
+        <option value="legal_case">Legal cases</option>
+        <option value="policy">Policies</option>
+        <option value="secularism">Secularism (positive)</option>
+      </select>
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search title / city / state..."
+      />
+    </div>
+  </header>
+
+  <main>
+    <div id="map"></div>
+    <aside id="sidebar">
+      <h2>Articles (<span id="articleCount">0</span>)</h2>
+      <div id="articleList"></div>
+    </aside>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    // ------ Basic map setup ------
+    const map = L.map('map').setView([22.5, 79], 5); // Center roughly on India
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Legend for categories
+    const categoryColors = {
+      communal_violence: '#ef4444',
+      hate_speech: '#fb923c',
+      legal_case: '#3b82f6',
+      policy: '#6b7280',
+      secularism: '#22c55e',
+      default: '#6b7280'
+    };
+
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <strong>Categories</strong><br/>
+        <div class="legend-item"><span class="legend-color" style="background:${categoryColors.communal_violence}"></span>Communal violence</div>
+        <div class="legend-item"><span class="legend-color" style="background:${categoryColors.hate_speech}"></span>Hate speech</div>
+        <div class="legend-item"><span class="legend-color" style="background:${categoryColors.legal_case}"></span>Legal cases</div>
+        <div class="legend-item"><span class="legend-color" style="background:${categoryColors.policy}"></span>Policies</div>
+        <div class="legend-item"><span class="legend-color" style="background:${categoryColors.secularism}"></span>Secularism (positive)</div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+
+    // ------ Data handling ------
+
+    let articles = [];
+    let markers = [];
+    let markerLayer = L.layerGroup().addTo(map);
+
+    const categoryFilterEl = document.getElementById('categoryFilter');
+    const searchInputEl = document.getElementById('searchInput');
+    const articleListEl = document.getElementById('articleList');
+    const articleCountEl = document.getElementById('articleCount');
+
+    function getCategoryBadgeClass(cat) {
+      const known = ['communal_violence', 'hate_speech', 'legal_case', 'policy', 'secularism'];
+      if (known.includes(cat)) {
+        return 'badge-' + cat;
+      }
+      return 'badge-default';
+    }
+
+    function createMarker(article) {
+      const color = categoryColors[article.category] || categoryColors.default;
+
+      const marker = L.circleMarker([article.latitude, article.longitude], {
+        radius: 7,
+        fillColor: color,
+        color: '#ffffff',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.9
+      });
+
+      const popupHtml = `
+        <strong>${article.title}</strong><br/>
+        <small>${article.city || ''}${article.city && article.state ? ', ' : ''}${article.state || ''}</small><br/>
+        <small>${article.date || ''}</small><br/>
+        <span class="badge ${getCategoryBadgeClass(article.category)}">${article.category || 'Other'}</span>
+        ${article.summary ? `<p style="margin-top:4px; font-size:0.8rem;">${article.summary}</p>` : ''}
+        ${article.url ? `<a href="${article.url}" target="_blank" rel="noopener noreferrer">Read article</a>` : ''}
+      `;
+
+      marker.bindPopup(popupHtml);
+      return marker;
+    }
+
+    function renderMarkers(filtered) {
+      markerLayer.clearLayers();
+      markers = [];
+
+      filtered.forEach(article => {
+        if (article.latitude && article.longitude) {
+          const m = createMarker(article);
+          m.addTo(markerLayer);
+          markers.push({ marker: m, article });
+        }
+      });
+
+      if (filtered.length > 0) {
+        const group = L.featureGroup(markers.map(m => m.marker));
+        map.fitBounds(group.getBounds().pad(0.2));
+      }
+    }
+
+    function renderSidebar(filtered) {
+      articleListEl.innerHTML = '';
+      articleCountEl.textContent = filtered.length;
+
+      filtered
+        .sort((a, b) => (b.date || '').localeCompare(a.date || '')) // newest first
+        .forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'article-card';
+
+          card.innerHTML = `
+            <div class="article-title">${article.title}</div>
+            <div class="article-meta">
+              ${article.date || ''} ·
+              ${article.city || ''}${article.city && article.state ? ', ' : ''}${article.state || ''}
+              ${article.source ? ' · ' + article.source : ''}
+            </div>
+            <div class="badge ${getCategoryBadgeClass(article.category)}">
+              ${article.category || 'Other'}
+            </div>
+            ${
+              article.tags && article.tags.length
+                ? article.tags
+                    .map(tag => `<span class="badge badge-tag">#${tag}</span>`)
+                    .join(' ')
+                : ''
+            }
+            ${
+              article.summary
+                ? `<div style="margin-top:4px;">${article.summary}</div>`
+                : ''
+            }
+          `;
+
+          // On click: fly to marker and open popup (if exists)
+          card.addEventListener('click', () => {
+            const mObj = markers.find(m => m.article.id === article.id);
+            if (mObj) {
+              map.flyTo(mObj.marker.getLatLng(), 8, { duration: 0.7 });
+              mObj.marker.openPopup();
+            }
+          });
+
+          // If the article has a URL, right-click opens it directly
+          if (article.url) {
+            card.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              window.open(article.url, '_blank', 'noopener');
+            });
+          }
+
+          articleListEl.appendChild(card);
+        });
+    }
+
+    function applyFilters() {
+      const category = categoryFilterEl.value;
+      const query = searchInputEl.value.trim().toLowerCase();
+
+      const filtered = articles.filter(a => {
+        // Category filter
+        const catOK = category === 'all' || (a.category || '') === category;
+
+        // Text search in title/city/state/summary
+        const text = [
+          a.title || '',
+          a.city || '',
+          a.state || '',
+          a.summary || ''
+        ].join(' ').toLowerCase();
+
+        const searchOK = query === '' || text.includes(query);
+
+        return catOK && searchOK;
+      });
+
+      renderMarkers(filtered);
+      renderSidebar(filtered);
+    }
+
+    // Event listeners for filters
+    categoryFilterEl.addEventListener('change', applyFilters);
+    searchInputEl.addEventListener('input', applyFilters);
+
+    // ------ Load data from JSON file ------
+    fetch('data/articles.json')
+      .then(resp => resp.json())
+      .then(json => {
+        articles = json;
+        applyFilters();
+      })
+      .catch(err => {
+        console.error('Error loading articles.json', err);
+        alert('Could not load data/articles.json. Check the file path and format.');
+      });
+  </script>
+</body>
+</html>
