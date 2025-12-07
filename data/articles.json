@@ -1,0 +1,14 @@
+{
+  "id": 301,
+  "title": "New incident...",
+  "date": "2025-12-01",
+  "state": "Maharashtra",
+  "city": "Mumbai",
+  "latitude": 19.0760,
+  "longitude": 72.8777,
+  "category": "hate_speech",
+  "tags": ["politics"],
+  "source": "Scroll.in",
+  "url": "https://example.com/article301",
+  "summary": "2–3 lines summary."
+}
